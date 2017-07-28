@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg" 
+    xmlns:job="http://www.dangdang.com/schema/ddframe/job" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.dangdang.com/schema/ddframe/reg
+                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd
+                        http://www.dangdang.com/schema/ddframe/job
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd
+                        ">
+	<!-- 阿里云配置 end -->
+     <bean id="regCenter" class="com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter" init-method="init">
+        <constructor-arg>
+            <bean class="com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration">
+                <property name="serverLists" value="${dubbo.registry.address}" />
+                <property name="namespace" value="job/mall" />
+                <property name="baseSleepTimeMilliseconds" value="1000" />
+                <property name="maxSleepTimeMilliseconds" value="3000" />
+                <property name="maxRetries" value="3" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+	<!-- 每天凌晨1点执行店铺商品新品标签取消显示的定时任务 -->
+	<job:simple id="storeSkuTagtypeJob" class="com.okdeer.archive.goods.store.job.StoreSkuTagtypeJob" registry-center-ref="regCenter" cron="0 * 1 * * ?" sharding-total-count="1" />
+
+    <!-- 每天凌晨2点同步分公司标准库的常用、推荐商品定时任务 -->
+    <job:simple id="goodsSkuSyncJob" class="com.okdeer.archive.goods.job.GoodsSkuSyncJob" registry-center-ref="regCenter" cron="0 0 2 * * ?" sharding-total-count="1" />
+
+	<!-- zengj：每隔半个小时执行店铺公告的定时任务 -->
+	<job:simple id="storeNoticeJob" class="com.okdeer.archive.store.job.StoreNoticeJob" registry-center-ref="regCenter" cron="0 */30 * * * ?"   sharding-total-count="1"/>
+
+	<!-- zengj：每隔5分钟执行更新商品到搜索引擎的定时任务 -->
+	<!-- <job:simple id="updateGoodsToSearchJob" class="com.okdeer.archive.goods.store.job.UpdateGoodsToSearchJob" registry-center-ref="regCenter" cron="0 */5 * * * ?"   sharding-total-count="1"/> -->
+
+    <!-- lijun:每小时执行一次，超过服务有效时间的服务商品进行下架 -->
+    <job:simple id="serviceSkuStatusUpdateJob" class="com.okdeer.archive.goods.store.job.ServiceSkuStatusUpdateJob" registry-center-ref="regCenter" cron="0 0 */1 * * ?"   sharding-total-count="1"/>
+ 	<!-- tuzhd:每三天执行一次，没有库存且没有关联特惠活动的商品进行下架 -->
+    <job:simple id="goodsStoreSkuOffShelfJob" class="com.okdeer.archive.goods.spu.job.GoodsStoreSkuOffShelfJob" registry-center-ref="regCenter" cron="0 0 0 */3 * ?"   sharding-total-count="1"/>
+
+	<!-- luosm:每天凌晨2点执行店铺销售数据统计的定时任务 -->
+	<job:simple id="storeDataStatisticsJob" class="com.okdeer.archive.store.job.StoreDataStatisticsJob" registry-center-ref="regCenter" cron="0 0 2 * * ?" sharding-total-count="1" />
+	
+	<!-- luosm:每天凌晨3点执行店铺商品数据统计的定时任务 -->
+	<job:simple id="StoreGoodsStatisticsJob" class="com.okdeer.archive.store.job.StoreGoodsStatisticsJob" registry-center-ref="regCenter" cron="0 0 3 * * ?" sharding-total-count="1" />
+
+	<!-- tuzhd:每天凌晨1点执行商品定时商品热销销售统计定时任务 -->
+	<job:simple id="goodsStoreSaleCountJob" class="com.okdeer.archive.goods.store.job.GoodsStoreSaleCountJob" registry-center-ref="regCenter" cron="0 0 1 * * ?" sharding-total-count="1" />
+</beans>

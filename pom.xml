@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.okdeer.archive</groupId>
+  <artifactId>okdeer-psms-archive</artifactId>
+  <packaging>pom</packaging>
+
+  <name>okdeer-psms-archive</name>
+  <url>http://maven.apache.org</url>
+  <parent>
+		<groupId>com.okdeer</groupId>
+		<artifactId>okdeer-root</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+  </parent>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.8</java.version>
+    <mall.version>0.0.1-SNAPSHOT</mall.version>
+    <base.version>0.1.0-SNAPSHOT</base.version>
+  </properties>
+<dependencyManagement>
+  <dependencies>
+	    <dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <scope>test</scope>
+	    </dependency>
+	    <dependency>
+			<groupId>com.okdeer.mall</groupId>
+			<artifactId>okdeer-psms-api</artifactId>
+			<version>${mall.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.okdeer.base</groupId>
+			<artifactId>okdeer-base-dal</artifactId>
+			<version>${base.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>mybatis-spring</artifactId>
+					<groupId>org.mybatis</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>mybatis</artifactId>
+					<groupId>org.mybatis</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+  </dependencies>
+  </dependencyManagement>
+  <modules>
+  	<module>okdeer-archive-order</module>
+  	<module>okdeer-archive-service</module>
+  	<module>okdeer-archive-goods</module>
+    <module>okdeer-archive-operate</module>
+    <module>okdeer-archive-activity</module>
+    <module>okdeer-archive-member</module>
+    <module>okdeer-archive-ele</module>
+    <module>okdeer-archive-system</module>
+  </modules>
+</project>
